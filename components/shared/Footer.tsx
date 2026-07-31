@@ -73,7 +73,7 @@ const FooterComponent = () => {
             <ul className="space-y-2 text-sm text-neutral-400">
               <li className="flex items-center gap-2.5">
                 <MapPin size={15} className="shrink-0 text-neutral-500" />
-                Mirpur, Dhaka, Bangladesh
+                Uttara, Dhaka, Bangladesh
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={15} className="shrink-0 text-neutral-500" />
@@ -187,13 +187,22 @@ const FooterComponent = () => {
         <div className="flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-6 text-xs text-neutral-500 md:flex-row">
           <p>&copy; {new Date().getFullYear()} tobarok. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-5">
-            <Link href="/terms" className="transition-colors hover:text-neutral-300">
+            <Link
+              href="/terms"
+              className="transition-colors hover:text-neutral-300"
+            >
               Terms &amp; Conditions
             </Link>
-            <Link href="/privacy" className="transition-colors hover:text-neutral-300">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-neutral-300"
+            >
               Privacy Policy
             </Link>
-            <Link href="/returns" className="transition-colors hover:text-neutral-300">
+            <Link
+              href="/returns"
+              className="transition-colors hover:text-neutral-300"
+            >
               Return Policy
             </Link>
           </div>

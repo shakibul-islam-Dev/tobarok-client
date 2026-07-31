@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import type { Product } from "@/lib/data";
 import Breadcrumb, { type Crumb } from "@/components/ui/Breadcrumb";
 import ProductCard from "@/components/home/ProductCard";
+import AdSlot from "@/components/ads/AdSlot";
+import { ads } from "@/lib/ads";
 
 type SortKey = "featured" | "price-asc" | "price-desc" | "name";
 
@@ -106,10 +108,18 @@ export default function ShopPage({
           </button>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5">
-          {visibleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div className="mt-8 lg:flex lg:items-start lg:gap-8">
+          <div className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+            {visibleProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          <aside className="hidden w-60 shrink-0 lg:block xl:w-72">
+            <div className="sticky top-24">
+              <AdSlot slot={ads.shopSidebar} format="vertical" />
+            </div>
+          </aside>
         </div>
       )}
     </div>

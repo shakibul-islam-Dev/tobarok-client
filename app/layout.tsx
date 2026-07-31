@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import NavigationBar from "@/components/shared/Navigation";
 import FooterComponent from "@/components/shared/Footer";
+import AdScript from "@/components/ads/AdScript";
+import AdBanners from "@/components/ads/AdBanners";
 import { StoreProvider } from "@/components/store/StoreProvider";
 
 const poppins = Poppins({
@@ -32,8 +34,11 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white">
         <StoreProvider>
           <NavigationBar />
+          <AdBanners position="top" />
           <main className="w-full flex-1">{children}</main>
+          <AdBanners position="footer" />
           <FooterComponent />
+          <AdScript />
         </StoreProvider>
       </body>
     </html>
