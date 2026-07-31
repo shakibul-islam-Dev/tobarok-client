@@ -3,9 +3,10 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import NavigationBar from "@/components/shared/Navigation";
 import FooterComponent from "@/components/shared/Footer";
+import { StoreProvider } from "@/components/store/StoreProvider";
 
 const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
   subsets: ["latin"],
 });
@@ -13,9 +14,10 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "tobarok | Shopping & Earn",
   description:
-    "A modern e-commerce platform for seamless shopping and earning rewards.",
-  viewport: "width=device-width, initial-scale=1",
+    "tobarok — premium quality t-shirts and streetwear. Big sale, new drops and most wanted pieces at unbeatable prices.",
 };
+
+export const viewport = "width=device-width, initial-scale=1";
 
 export default function RootLayout({
   children,
@@ -25,14 +27,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} font-sans h-full scroll-smooth antialiased`}
+      className={`${poppins.variable} font-sans scroll-smooth antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
-        <NavigationBar />
-        <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {children}
-        </main>
-        <FooterComponent />
+      <body className="min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white">
+        <StoreProvider>
+          <NavigationBar />
+          <main className="w-full flex-1">{children}</main>
+          <FooterComponent />
+        </StoreProvider>
       </body>
     </html>
   );

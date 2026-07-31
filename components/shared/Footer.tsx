@@ -1,189 +1,200 @@
 "use client";
-import { ShoppingBag, Send } from "lucide-react";
+
+import {
+  AtSign,
+  Globe,
+  Mail,
+  MapPin,
+  MessageSquareShare,
+  Phone,
+  Send,
+  Share2,
+  ShoppingBag,
+} from "lucide-react";
 import Link from "next/link";
+
+const shopLinks = [
+  { title: "Drop Shoulder", link: "/collections/drop-shoulder" },
+  { title: "Solid Basics", link: "/collections/solid" },
+  { title: "Polo Perfection", link: "/collections/polo" },
+  { title: "Winter Essentials", link: "/collections/winter" },
+  { title: "Kiddo", link: "/collections/kiddo" },
+  { title: "Accessories", link: "/accessories" },
+];
+
+const helpLinks = [
+  { title: "Outlets", link: "/store-locator" },
+  { title: "Track Order", link: "/track" },
+  { title: "Custom / Bulk", link: "/custom" },
+  { title: "FAQs", link: "/faq" },
+  { title: "Size Chart", link: "/size-chart" },
+  { title: "Contact Us", link: "/contact" },
+];
+
+const companyLinks = [
+  { title: "About Us", link: "/about" },
+  { title: "Signature Series", link: "/signature-series" },
+  { title: "Lifestyle Series", link: "/collections/lifestyle" },
+  { title: "Terms & Conditions", link: "/terms" },
+  { title: "Privacy Policy", link: "/privacy" },
+  { title: "Return Policy", link: "/returns" },
+];
+
+const socials = [
+  { icon: Share2, label: "Facebook", href: "#" },
+  { icon: AtSign, label: "Instagram", href: "#" },
+  { icon: MessageSquareShare, label: "YouTube", href: "#" },
+  { icon: Globe, label: "Twitter", href: "#" },
+];
 
 const FooterComponent = () => {
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Grid Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
-          {/* Brand & Info Column (Spans 2 columns on large screens) */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <ShoppingBag size={36} className="text-indigo-400 shrink-0" />
+    <footer className="bg-neutral-950 text-neutral-300">
+      <div className="mx-auto max-w-7xl px-4 pb-8 pt-14">
+        <div className="grid grid-cols-1 gap-10 border-b border-neutral-800 pb-12 md:grid-cols-2 lg:grid-cols-5">
+          <div className="space-y-4 lg:col-span-2">
+            <Link href="/" className="flex items-center gap-2.5">
+              <ShoppingBag size={32} className="text-white" />
               <div>
-                <h1 className="font-bold text-2xl leading-none text-white tracking-tight">
+                <h1 className="text-2xl font-extrabold leading-none tracking-tight text-white">
                   tobarok
                 </h1>
-                <p className="font-semibold text-xs text-slate-400 mt-1">
-                  Shopping <span className="text-indigo-400">&amp;</span> Earn
+                <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-500">
+                  Shopping &amp; Earn
                 </p>
               </div>
             </Link>
 
-            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              Your one-stop destination for seamless shopping and rewarding
-              daily earnings. Quality products delivered straight to your door.
+            <p className="max-w-sm text-sm leading-relaxed text-neutral-400">
+              Premium quality t-shirts, polos and streetwear made to fit your
+              vibe. Big drops, honest prices and a brand built with pride.
             </p>
 
-            {/* Social Links */}
-            <div className="flex items-center gap-3 pt-2">
-              <Link
-                href="#"
-                className="p-2 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-                aria-label=""
-              ></Link>
-              <Link
-                href="#"
-                className="p-2 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-                aria-label=""
-              ></Link>
-              <Link
-                href="#"
-                className="p-2 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-                aria-label=""
-              ></Link>
-              <Link
-                href="#"
-                className="p-2 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-                aria-label=""
-              ></Link>
+            <ul className="space-y-2 text-sm text-neutral-400">
+              <li className="flex items-center gap-2.5">
+                <MapPin size={15} className="shrink-0 text-neutral-500" />
+                Mirpur, Dhaka, Bangladesh
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone size={15} className="shrink-0 text-neutral-500" />
+                +880 1XXX-XXXXXX
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Mail size={15} className="shrink-0 text-neutral-500" />
+                hello@tobarok.com
+              </li>
+            </ul>
+
+            <div className="flex items-center gap-3 pt-1">
+              {socials.map(({ icon: Icon, label, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition-colors hover:border-white hover:bg-white hover:text-neutral-900"
+                >
+                  <Icon size={16} />
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Helpful Links Column */}
-          <div className="space-y-4">
-            <h2 className="text-white font-semibold text-base tracking-wider uppercase text-xs">
-              Helpful Links
-            </h2>
+          <div>
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">
+              Shop
+            </h3>
             <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link
-                  href="/shop"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Shop Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/track-order"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Track Order
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/earn"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Earn Program
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  FAQs &amp; Help
-                </Link>
-              </li>
+              {shopLinks.map((link) => (
+                <li key={link.title}>
+                  <Link
+                    href={link.link}
+                    className="transition-colors hover:text-white"
+                  >
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Company & Support Column */}
-          <div className="space-y-4">
-            <h2 className="text-white font-semibold text-base tracking-wider uppercase text-xs">
+          <div>
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">
+              Help
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              {helpLinks.map((link) => (
+                <li key={link.title}>
+                  <Link
+                    href={link.link}
+                    className="transition-colors hover:text-white"
+                  >
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">
               Company
-            </h2>
+            </h3>
             <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link
-                  href="/about"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/complaints"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Submit a Complaint
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/sponsors"
-                  className="hover:text-indigo-400 transition-colors"
-                >
-                  Sponsors &amp; Partners
-                </Link>
-              </li>
+              {companyLinks.map((link) => (
+                <li key={link.title}>
+                  <Link
+                    href={link.link}
+                    className="transition-colors hover:text-white"
+                  >
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+        </div>
 
-          {/* Newsletter Column */}
-          <div className="space-y-4">
-            <h2 className="text-white font-semibold text-base tracking-wider uppercase text-xs">
+        <div className="flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-md space-y-3">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white">
               Newsletter
-            </h2>
-            <p className="text-sm text-slate-400">
-              Subscribe to receive update alerts and special discount offers.
+            </h3>
+            <p className="text-sm text-neutral-400">
+              Subscribe to get early access to drops and exclusive discount
+              offers.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md transition-colors flex items-center justify-center"
-                  aria-label="Subscribe"
-                >
-                  <Send size={14} />
-                </button>
-              </div>
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="email"
+                required
+                placeholder="Your email address"
+                className="w-full rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-neutral-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Subscribe"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-neutral-900 transition-colors hover:bg-neutral-300"
+              >
+                <Send size={16} />
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Bottom Bar Section */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-6 text-xs text-neutral-500 md:flex-row">
           <p>&copy; {new Date().getFullYear()} tobarok. All rights reserved.</p>
-
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link
-              href="/terms"
-              className="hover:text-slate-400 transition-colors"
-            >
+          <div className="flex flex-wrap justify-center gap-5">
+            <Link href="/terms" className="transition-colors hover:text-neutral-300">
               Terms &amp; Conditions
             </Link>
-            <Link
-              href="/privacy"
-              className="hover:text-slate-400 transition-colors"
-            >
+            <Link href="/privacy" className="transition-colors hover:text-neutral-300">
               Privacy Policy
             </Link>
-            <Link
-              href="/cookies"
-              className="hover:text-slate-400 transition-colors"
-            >
-              Cookie Preferences
+            <Link href="/returns" className="transition-colors hover:text-neutral-300">
+              Return Policy
             </Link>
           </div>
         </div>
