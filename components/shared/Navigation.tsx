@@ -6,7 +6,6 @@ import {
   Menu,
   Search,
   ShoppingBag,
-  User,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { navigationLinks, type NavLink } from "@/lib/data";
 import { useStore } from "@/components/store/StoreProvider";
+import UserMenu from "@/components/shared/UserMenu";
 
 function DesktopItem({ item }: { item: NavLink }) {
   const [open, setOpen] = useState(false);
@@ -191,13 +191,7 @@ const NavigationBar = () => {
             >
               <Search size={20} />
             </button>
-            <Link
-              href="/account"
-              aria-label="Account"
-              className="p-2 text-neutral-900 transition-colors hover:text-neutral-500"
-            >
-              <User size={20} />
-            </Link>
+            <UserMenu />
             <Link
               href="/wishlist"
               aria-label="Wishlist"
