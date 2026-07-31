@@ -24,7 +24,7 @@ const formatPrice = (n: number) => `${CURRENCY}${n.toLocaleString("en-BD")}`;
 
 // Inline fallback for ProductCard to eliminate missing module errors
 function RelatedProductCard({ product }: { product: Product }) {
-  const { toggleWishlist, isWishlisted } = useStore();
+  const { toggleWishlist, isWishlisted, addToCart } = useStore();
   const wishlisted = isWishlisted(product.id);
 
   return (
@@ -105,6 +105,7 @@ function RelatedProductCard({ product }: { product: Product }) {
 
           <button
             type="button"
+            onClick={() => addToCart(product.id)}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-emerald-600 hover:text-white"
             aria-label="Add to cart"
           >
@@ -126,7 +127,7 @@ export default function ProductPage({ product, related }: ProductPageProps) {
   const [activeTab, setActiveTab] = useState<
     "descriptions" | "additional" | "feedback"
   >("descriptions");
-  const { toggleWishlist, isWishlisted } = useStore();
+  const { toggleWishlist, isWishlisted, addToCart } = useStore();
   const wishlisted = isWishlisted(product.id);
 
   const galleryImages = [
@@ -218,7 +219,7 @@ export default function ProductPage({ product, related }: ProductPageProps) {
               <span className="font-medium text-gray-700">4 Review</span>
             </div>
             <span>•</span>
-            <span>SKU: 2,51,594</span>
+            <span>SKU: {product.id.toString().slice(-6)}</span>
           </div>
 
           <div className="mt-4 flex items-baseline gap-3">
@@ -230,9 +231,14 @@ export default function ProductPage({ product, related }: ProductPageProps) {
             <span className="text-2xl font-bold text-emerald-600">
               {formatPrice(product.price)}
             </span>
-            <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-bold text-red-500">
-              64% Off
-            </span>
+            {product.originalPrice && (
+              <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-bold text-red-500">
+                {Math.round(
+                  ((product.originalPrice - product.price) / product.originalPrice) * 100
+                )}
+                % Off
+              </span>
+            )}
           </div>
 
           <hr className="my-5 border-gray-100" />
@@ -295,6 +301,7 @@ export default function ProductPage({ product, related }: ProductPageProps) {
 
             <button
               type="button"
+              onClick={() => addToCart(product.id, quantity)}
               className="flex flex-1 items-center justify-center gap-2 rounded-full bg-emerald-600 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-emerald-700 active:scale-[0.98]"
             >
               <span>Add to Cart</span>

@@ -30,7 +30,7 @@ export default function QuickViewModal({
 }: QuickViewModalProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { toggleWishlist, isWishlisted } = useStore();
+  const { toggleWishlist, isWishlisted, addToCart } = useStore();
 
   if (!isOpen || !product) return null;
 
@@ -177,6 +177,7 @@ export default function QuickViewModal({
 
               <button
                 type="button"
+                onClick={() => addToCart(product.id, quantity)}
                 className="flex flex-1 items-center justify-center gap-2 rounded-full bg-emerald-600 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-emerald-700 active:scale-[0.98]"
               >
                 <span>Add to Cart</span>

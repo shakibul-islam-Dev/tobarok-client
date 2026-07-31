@@ -12,7 +12,7 @@ const formatPrice = (n: number) => `${CURRENCY}${n.toLocaleString("en-BD")}`;
 
 export default function ProductCard({ product }: { product: Product }) {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const { toggleWishlist, isWishlisted } = useStore();
+  const { toggleWishlist, isWishlisted, addToCart } = useStore();
   const wishlisted = isWishlisted(product.id);
 
   return (
@@ -116,13 +116,17 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
 
           {/* Action Button */}
-          <Link
-            href={`/product/${product.id}`}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(product.id);
+            }}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-700 shadow-sm transition-all duration-300 hover:bg-emerald-600 hover:text-white active:bg-emerald-700 active:scale-95 group-hover:bg-emerald-500 group-hover:text-white"
-            aria-label="Select size"
+            aria-label="Add to cart"
           >
             <ShoppingBag size={18} />
-          </Link>
+          </button>
         </div>
       </div>
 
