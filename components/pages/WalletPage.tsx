@@ -1,69 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Plus, Wallet } from "lucide-react";
+import Link from "next/link";
+import {
+  AlertTriangle,
+  Check,
+  Link2,
+  Plus,
+  Wallet,
+} from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-
-const BALANCE_KEY = "tobarok-wallet-balance";
-
-const transactions = [
-  {
-    id: 1,
-    label: "Order #738 — payment",
-    amount: "-$135.00",
-    date: "8 Sep, 2020",
-    type: "debit" as const,
-  },
-  {
-    id: 2,
-    label: "Cashback from Order #701",
-    amount: "+$3.25",
-    date: "24 May, 2020",
-    type: "credit" as const,
-  },
-  {
-    id: 3,
-    label: "Wallet top-up",
-    amount: "+$100.00",
-    date: "12 May, 2020",
-    type: "credit" as const,
-  },
-  {
-    id: 4,
-    label: "Order #130 — payment",
-    amount: "-$250.00",
-    date: "22 Oct, 2020",
-    type: "debit" as const,
-  },
-];
-
-function loadBalance(): number {
-  if (typeof window === "undefined") return 0;
-  try {
-    const raw = window.localStorage.getItem(BALANCE_KEY);
-    return raw ? Number(raw) : 0;
-  } catch {
-    return 0;
-  }
-}
+import { useWalletLedger } from "@/lib/use-ledger";
+import {
+  createIdempotencyKey,
+  formatMoney,
+  linkReferences,
+  signedAmount,
+  SOURCE_LABEL,
+  TransactionError,
+  type CreateTransactionInput,
+} from "@/lib/transactions";
+import { initialOrders } from "@/lib/admin-data";
+import { stripOrderHash } from "@/lib/orders";
 
 export default function WalletPage() {
-  const [balance, setBalance] = useState<number>(() => loadBalance());
+  const { ledger, balance, restored, addTransaction } = useWalletLedger();
   const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [persistWarning, setPersistWarning] = useState<string | null>(null);
 
-  const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
+  // Dynamic linking: transaction.reference -> matching order (if any).
+  const orderLinks = linkReferences(ledger, initialOrders);
+  // Newest first for display.
+  const history = [...ledger].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt)
+  );
+
+  const handleTopUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
     const value = Number(amount);
     if (!amount || Number.isNaN(value) || value <= 0) {
-      setMessage("Please enter a valid amount.");
+      setError("Please enter an amount greater than zero.");
       return;
     }
-    const next = balance + value;
-    setBalance(next);
-    window.localStorage.setItem(BALANCE_KEY, String(next));
-    setAmount("");
-    setMessage(`Added $${value.toFixed(2)} to your wallet`);
+
+    // Guard against double submission (double clicks, retries): each submit
+    // gets a fresh nonce, and the idempotency key rejects re-applying it.
+    setSubmitting(true);
+    try {
+      const input: CreateTransactionInput = {
+        type: "credit",
+        source: "topup",
+        amount: value,
+        idempotencyKey: createIdempotencyKey({
+          source: "topup",
+          amount: value,
+          nonce: crypto.randomUUID(),
+        }),
+      };
+      const result = addTransaction(input);
+      if (!result.saved) {
+        setPersistWarning(
+          "Could not save to this device — your balance may reset."
+        );
+      }
+      setAmount("");
+      setSuccess(`Added ${formatMoney(value)} to your wallet.`);
+    } catch (err) {
+      setError(
+        err instanceof TransactionError
+          ? err.message
+          : "Something went wrong while adding funds. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -72,6 +88,20 @@ export default function WalletPage() {
       <h1 className="text-3xl font-extrabold uppercase tracking-tight text-neutral-900 sm:text-4xl">
         Wallet
       </h1>
+
+      {restored && (
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <AlertTriangle size={16} />
+          Saved transaction history could not be read and was reset to a
+          starting balance.
+        </div>
+      )}
+      {persistWarning && (
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          <AlertTriangle size={16} />
+          {persistWarning}
+        </div>
+      )}
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -83,7 +113,7 @@ export default function WalletPage() {
               </span>
             </div>
             <p className="mt-3 text-4xl font-extrabold tracking-tight">
-              ${balance.toFixed(2)}
+              {formatMoney(balance)}
             </p>
             <p className="mt-1 text-xs text-neutral-400">
               Cashback and refunds are credited here.
@@ -91,7 +121,7 @@ export default function WalletPage() {
           </div>
 
           <form
-            onSubmit={handleAdd}
+            onSubmit={handleTopUp}
             className="rounded-xl border border-neutral-200/80 bg-white p-6 shadow-sm"
           >
             <h2 className="flex items-center gap-2 text-base font-bold text-neutral-900">
@@ -104,24 +134,33 @@ export default function WalletPage() {
                 min="1"
                 step="0.01"
                 value={amount}
+                disabled={submitting}
                 onChange={(e) => {
                   setAmount(e.target.value);
-                  setMessage(null);
+                  setError(null);
+                  setSuccess(null);
                 }}
                 placeholder="Amount (e.g. 50)"
-                className="w-full flex-1 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900"
+                className="w-full flex-1 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700"
+                disabled={submitting}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Add Funds
+                {submitting ? "Adding…" : "Add Funds"}
               </button>
             </div>
-            {message && (
+            {error && (
+              <p className="mt-3 flex items-center gap-2 text-sm text-red-600">
+                <AlertTriangle size={16} />
+                {error}
+              </p>
+            )}
+            {success && (
               <p className="mt-3 flex items-center gap-2 text-sm text-emerald-600">
                 <Check size={16} />
-                {message}
+                {success}
               </p>
             )}
           </form>
@@ -132,30 +171,57 @@ export default function WalletPage() {
                 Transaction History
               </h2>
             </div>
-            <ul className="divide-y divide-neutral-100">
-              {transactions.map((tx) => (
-                <li
-                  key={tx.id}
-                  className="flex items-center justify-between gap-4 px-6 py-4"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-neutral-900">
-                      {tx.label}
-                    </p>
-                    <p className="mt-0.5 text-xs text-neutral-400">{tx.date}</p>
-                  </div>
-                  <span
-                    className={`text-sm font-bold ${
-                      tx.type === "credit"
-                        ? "text-emerald-600"
-                        : "text-neutral-900"
-                    }`}
-                  >
-                    {tx.amount}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {history.length === 0 ? (
+              <p className="px-6 pb-8 text-sm text-neutral-400">
+                No transactions yet. Add money to get started.
+              </p>
+            ) : (
+              <ul className="divide-y divide-neutral-100">
+                {history.map((tx) => {
+                  const order = orderLinks.get(tx.id);
+                  return (
+                    <li
+                      key={tx.id}
+                      className="flex items-center justify-between gap-4 px-6 py-4"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-neutral-900">
+                          {tx.description}
+                        </p>
+                        <p className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+                          {new Date(tx.createdAt).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                            {SOURCE_LABEL[tx.source]}
+                          </span>
+                          {order && (
+                            <Link
+                              href={`/orders/${stripOrderHash(order.id)}`}
+                              className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-600 transition-colors hover:bg-neutral-200"
+                            >
+                              <Link2 size={10} />
+                              {order.id}
+                            </Link>
+                          )}
+                        </p>
+                      </div>
+                      <span
+                        className={`shrink-0 text-sm font-bold ${
+                          tx.type === "credit"
+                            ? "text-emerald-600"
+                            : "text-neutral-900"
+                        }`}
+                      >
+                        {signedAmount(tx)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
 
@@ -169,6 +235,10 @@ export default function WalletPage() {
             <li>Use your balance at checkout to pay for orders.</li>
             <li>Balance never expires.</li>
           </ul>
+          <p className="mt-5 rounded-lg bg-neutral-50 p-3 text-xs leading-relaxed text-neutral-500">
+            Every movement is recorded in a transaction ledger — your balance is
+            always the sum of your history, so it can&apos;t drift out of sync.
+          </p>
         </div>
       </div>
     </div>

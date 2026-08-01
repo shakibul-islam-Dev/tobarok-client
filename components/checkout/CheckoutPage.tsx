@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Check, ShieldCheck } from "lucide-react";
 import { allProducts, CURRENCY } from "@/lib/data";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useStore } from "@/components/store/StoreProvider";
+import { useWalletLedger } from "@/lib/use-ledger";
+import {
+  createIdempotencyKey,
+  formatMoney,
+  TransactionError,
+} from "@/lib/transactions";
+import { createOrderId, stripOrderHash } from "@/lib/orders";
 
 const formatPrice = (n: number) => `${CURRENCY}${n.toLocaleString("en-BD")}`;
 const inputCls =
@@ -15,13 +22,61 @@ const productById = new Map(allProducts.map((p) => [p.id, p]));
 
 export default function CheckoutPage() {
   const { cart, cartSubtotal, cartCount, clearCart } = useStore();
-  const [placed, setPlaced] = useState(false);
-  const [payment, setPayment] = useState<"cod" | "bkash">("cod");
+  const { balance: walletBalance, addTransaction } = useWalletLedger();
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [payment, setPayment] = useState<"cod" | "bkash" | "wallet">("cod");
+  const [payError, setPayError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const delivery = cartSubtotal === 0 || cartSubtotal >= 1500 ? 0 : 90;
   const total = cartSubtotal + delivery;
 
-  if (placed) {
+  /**
+   * Places the order. For wallet payments this first commits a DEBIT to the
+   * shared transaction ledger; any validation failure (insufficient balance,
+   * duplicate application) aborts the order before anything is confirmed, so
+   * an order can never be placed without the money actually moving.
+   */
+  const handlePlaceOrder = () => {
+    if (submitting) return;
+    setPayError(null);
+
+    // Create the order id FIRST so the wallet transaction and the confirmation
+    // screen both link to the exact same order reference.
+    const orderId = createOrderId();
+
+    if (payment === "wallet") {
+      setSubmitting(true);
+      try {
+        addTransaction({
+          type: "debit",
+          source: "order_payment",
+          amount: total,
+          reference: orderId,
+          idempotencyKey: createIdempotencyKey({
+            source: "order_payment",
+            amount: total,
+            reference: orderId,
+            nonce: "checkout",
+          }),
+        });
+      } catch (err) {
+        setPayError(
+          err instanceof TransactionError
+            ? err.message
+            : "Could not charge your wallet. Please try again."
+        );
+        setSubmitting(false);
+        return;
+      }
+    }
+
+    clearCart();
+    setPlacedOrderId(orderId);
+    setSubmitting(false);
+  };
+
+  if (placedOrderId) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16">
         <div className="mx-auto max-w-md text-center">
@@ -29,16 +84,18 @@ export default function CheckoutPage() {
             <Check size={28} />
           </span>
           <h1 className="mt-5 text-2xl font-extrabold uppercase tracking-tight text-neutral-900 sm:text-3xl">
-            Order placed!
+            Order {placedOrderId} placed!
           </h1>
           <p className="mt-3 text-sm text-neutral-500">
-            Thanks for shopping with tobarok. This is a demo checkout — connect
-            your payment gateway to accept real orders. Track your order from
-            the Track Order page.
+            Thanks for shopping with tobarok.{" "}
+            {payment === "wallet"
+              ? `${formatMoney(total)} was charged to your wallet.`
+              : "This is a demo checkout — connect your payment gateway to accept real orders."}{" "}
+            Track your order from the Track Order page.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Link
-              href="/track"
+              href={`/track?order=${stripOrderHash(placedOrderId)}`}
               className="rounded-full bg-neutral-900 px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700"
             >
               Track Order
@@ -84,8 +141,7 @@ export default function CheckoutPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            clearCart();
-            setPlaced(true);
+            handlePlaceOrder();
           }}
           className="space-y-5 lg:col-span-2"
         >
@@ -134,6 +190,10 @@ export default function CheckoutPage() {
                 [
                   { id: "cod", label: "Cash on Delivery" },
                   { id: "bkash", label: "bKash / Nagad / Rocket" },
+                  {
+                    id: "wallet",
+                    label: `Wallet balance (${formatMoney(walletBalance)})`,
+                  },
                 ] as const
               ).map((method) => (
                 <label
@@ -145,7 +205,10 @@ export default function CheckoutPage() {
                     name="payment"
                     value={method.id}
                     checked={payment === method.id}
-                    onChange={() => setPayment(method.id)}
+                    onChange={() => {
+                      setPayment(method.id);
+                      setPayError(null);
+                    }}
                     className="accent-neutral-900"
                   />
                   <span className="text-sm font-medium text-neutral-900">
@@ -156,8 +219,29 @@ export default function CheckoutPage() {
             </div>
             {payment === "bkash" && (
               <p className="mt-3 rounded-lg bg-neutral-50 p-3 text-xs text-neutral-500">
-                You&apos;ll receive the bKash/Nagad payment number after placing the
-                order.
+                You&apos;ll receive the bKash/Nagad payment number after placing
+                the order.
+              </p>
+            )}
+            {payment === "wallet" && (
+              <p
+                className={`mt-3 rounded-lg p-3 text-xs ${
+                  walletBalance < total
+                    ? "bg-red-50 text-red-600"
+                    : "bg-neutral-50 text-neutral-500"
+                }`}
+              >
+                {walletBalance < total
+                  ? `Insufficient balance — ${formatMoney(
+                      total - walletBalance
+                    )} short for this order.`
+                  : `Your wallet will be charged ${formatMoney(total)} for this order.`}
+              </p>
+            )}
+            {payError && (
+              <p className="mt-3 flex items-center gap-2 text-sm text-red-600">
+                <AlertTriangle size={16} />
+                {payError}
               </p>
             )}
           </fieldset>
@@ -212,15 +296,16 @@ export default function CheckoutPage() {
             checkout
           </p>
           <button
-            type="submit"
-            onClick={(e) => {
-              e.preventDefault();
-              clearCart();
-              setPlaced(true);
-            }}
-            className="mt-5 w-full rounded-full bg-neutral-900 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700"
+            type="button"
+            onClick={handlePlaceOrder}
+            disabled={submitting}
+            className="mt-5 w-full rounded-full bg-neutral-900 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Place Order · {formatPrice(total)}
+            {submitting
+              ? "Processing…"
+              : payment === "wallet"
+                ? `Place Order · Pay ${formatMoney(total)}`
+                : `Place Order · ${formatMoney(total)}`}
           </button>
         </div>
       </div>

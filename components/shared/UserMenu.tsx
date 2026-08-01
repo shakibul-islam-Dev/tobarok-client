@@ -108,13 +108,13 @@ export default function UserMenu() {
                   <div className="py-1">
                     {hasRole(session.user.role, "admin") && (
                       <Link
-                        href="/admin"
+                        href="/admin/products"
                         onClick={() => setOpen(false)}
                         role="menuitem"
                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-black"
                       >
                         <Shield size={16} className="text-neutral-400" />
-                        Admin Panel
+                        Manage Store
                       </Link>
                     )}
                     {signedInItems.map((item) => {

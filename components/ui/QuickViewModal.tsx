@@ -14,6 +14,7 @@ import {
 import { CURRENCY, type Product } from "@/lib/data";
 import SmartImage from "@/components/ui/SmartImage";
 import { useStore } from "@/components/store/StoreProvider";
+import { useBackClose } from "@/components/shared/useBackClose";
 
 const formatPrice = (n: number) => `${CURRENCY}${n.toLocaleString("en-BD")}`;
 
@@ -31,6 +32,8 @@ export default function QuickViewModal({
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { toggleWishlist, isWishlisted, addToCart } = useStore();
+
+  useBackClose(isOpen, { onClose });
 
   if (!isOpen || !product) return null;
 

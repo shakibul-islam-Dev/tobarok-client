@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { navigationLinks, type NavLink } from "@/lib/data";
 import { useStore } from "@/components/store/StoreProvider";
 import UserMenu from "@/components/shared/UserMenu";
+import { useBackClose } from "@/components/shared/useBackClose";
 
 function DesktopItem({ item }: { item: NavLink }) {
   const [open, setOpen] = useState(false);
@@ -126,6 +127,12 @@ const NavigationBar = () => {
     setIsOpen((v) => !v);
     setOpenSubmenu(null);
   };
+
+  useBackClose(isOpen, { onClose: toggleMenu, lockScroll: true });
+  useBackClose(searchOpen, {
+    onClose: () => setSearchOpen(false),
+    lockScroll: false,
+  });
 
   const toggleMobileSubmenu = (title: string) => {
     setOpenSubmenu((cur) => (cur === title ? null : title));

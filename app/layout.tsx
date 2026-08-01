@@ -5,6 +5,7 @@ import NavigationBar from "@/components/shared/Navigation";
 import FooterComponent from "@/components/shared/Footer";
 import AdScript from "@/components/ads/AdScript";
 import AdBanners from "@/components/ads/AdBanners";
+import HistoryNav from "@/components/ui/HistoryNav";
 import { StoreProvider } from "@/components/store/StoreProvider";
 
 const poppins = Poppins({
@@ -39,6 +40,7 @@ export default function RootLayout({
           <AdBanners position="footer" />
           <FooterComponent />
           <AdScript />
+          <HistoryNav />
         </StoreProvider>
       </body>
     </html>

@@ -3,7 +3,11 @@ import { adminClient } from "better-auth/client/plugins";
 import { ac, adminRole, superadminRole, userRole } from "./rbac";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  // NEXT_PUBLIC_URL = backend base URL in this project's env convention
+  baseURL: process.env.NEXT_PUBLIC_URL || undefined,
+  fetchOptions: {
+    credentials: "include",
+  },
   plugins: [
     adminClient({
       ac,

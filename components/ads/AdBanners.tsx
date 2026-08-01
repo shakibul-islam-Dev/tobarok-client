@@ -10,7 +10,7 @@ interface AdBannersProps {
 
 export default function AdBanners({ position }: AdBannersProps) {
   const pathname = usePathname();
-  if (pathname === "/checkout") return null;
+  if (pathname !== "/") return null;
 
   return (
     <div

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import SmartImage from "@/components/ui/SmartImage";
+import { useBackClose } from "@/components/shared/useBackClose";
 
 interface NewsletterModalProps {
   imageSrc?: string;
@@ -46,6 +47,8 @@ export default function NewsletterModal({
     }
     setIsOpen(false);
   };
+
+  useBackClose(isOpen, { onClose: handleClose, lockScroll: true });
 
   if (!isOpen) return null;
 

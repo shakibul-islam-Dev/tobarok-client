@@ -108,16 +108,16 @@ export default function AdminUsersPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
-      <Breadcrumb items={[{ label: "Admin Panel", href: "/admin" }, { label: "Users" }]} />
+      <Breadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Users" }]} />
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-extrabold uppercase tracking-tight text-neutral-900 sm:text-4xl">
           User Management
         </h1>
         <Link
-          href="/admin"
+          href="/dashboard"
           className="text-sm font-semibold text-neutral-500 transition-colors hover:text-neutral-900"
         >
-          Back to Admin
+          Back to Dashboard
         </Link>
       </div>
 

@@ -9,6 +9,11 @@ import {
   userRole,
 } from "./rbac";
 
+/**
+ * Better Auth now runs in the backend Express server.
+ * This file is kept for backward compatibility but is no longer used for local auth handling.
+ * The client auth-client points directly to the backend URL.
+ */
 const uri =
   process.env.MONGO_DB_URI ?? "mongodb://localhost:27017/database";
 const client = new MongoClient(uri);
@@ -19,7 +24,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  baseURL: process.env.BETTER_AUTH_URL,
+  // NEXT_PUBLIC_URL = backend base URL in this project's env convention
+  baseURL: process.env.NEXT_PUBLIC_URL || "http://localhost:5000",
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,

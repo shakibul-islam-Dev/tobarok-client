@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import AuthRequired from "@/components/shared/AuthRequired";
-import AdminOverviewPage from "@/components/pages/AdminOverviewPage";
+import AdminProductsPage from "@/components/pages/AdminProductsPage";
 
 export const metadata: Metadata = {
-  title: "Dashboard | tobarok Admin",
-  description: "Track your store and manage content.",
+  title: "Products | tobarok Admin",
+  description: "Manage the tobarok product catalog.",
 };
 
-export default function Admin() {
+export default function AdminProducts() {
   return (
     <AuthRequired allowedRoles={["admin", "superadmin"]}>
-      <AdminOverviewPage />
+      <AdminProductsPage />
     </AuthRequired>
   );
 }

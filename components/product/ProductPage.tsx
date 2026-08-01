@@ -17,6 +17,7 @@ import {
   Eye,
 } from "lucide-react";
 import SmartImage from "@/components/ui/SmartImage";
+import BackButton from "@/components/ui/BackButton";
 import { CURRENCY, type Product } from "@/lib/data";
 import { useStore } from "@/components/store/StoreProvider";
 
@@ -140,6 +141,11 @@ export default function ProductPage({ product, related }: ProductPageProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <BackButton
+        fallbackHref="/shop"
+        label="Back to Shop"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-500 transition-colors hover:text-neutral-900"
+      />
       {/* Top Main Product Details */}
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Left Column: Vertical Thumbnails + Main Image */}
