@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { admin, signOut, useSession } from "@/lib/auth-client";
 import { hasRole, roleLabel } from "@/lib/permissions";
+import DashboardSidebar from "@/components/shared/DashboardSidebar";
 import { initialOrders, initialProducts } from "@/lib/admin-data";
 import { formatMoney } from "@/lib/transactions";
 import { useWalletLedger } from "@/lib/use-ledger";
@@ -271,26 +272,26 @@ export default function Dashboard() {
     .toUpperCase();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        {/* ---- Sidebar navigation ---- */}
-        <aside className="h-fit overflow-hidden rounded-xl border border-neutral-200/80 bg-white shadow-sm lg:sticky lg:top-6">
-          <div className="border-b border-neutral-100 p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-sm font-bold text-white">
-                {initials}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-neutral-900">
-                  {name}
-                </p>
-                <p className="truncate text-xs text-neutral-400">
-                  {session?.user.email ?? ""}
-                </p>
-              </div>
+    <>
+      <DashboardSidebar
+        topBarContent={
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-900 text-xs font-bold text-white">
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-neutral-900">
+                {name}
+              </p>
+              <p className="truncate text-xs text-neutral-400">
+                {session?.user.email ?? ""}
+              </p>
             </div>
           </div>
-          <nav className="py-2">
+        }
+      >
+        <div className="flex h-full flex-col overflow-hidden">
+          <nav className="min-h-0 flex-1 overflow-y-auto py-2">
             {isAdmin && (
               <div className="px-5 pb-1 pt-3">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
@@ -372,10 +373,13 @@ export default function Dashboard() {
               Log out
             </button>
           </nav>
-        </aside>
+        </div>
+      </DashboardSidebar>
 
-        {/* ---- Main content ---- */}
-        <div className="space-y-6 lg:col-span-3">
+      {/* ---- Main content ---- */}
+      <div className="lg:pl-72">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+          <div className="space-y-6">
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -718,8 +722,9 @@ export default function Dashboard() {
               </Link>
             </div>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

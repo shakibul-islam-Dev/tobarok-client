@@ -3,7 +3,6 @@ import CategoryGrid from "@/components/home/CategoryGrid";
 import Highlights from "@/components/home/Highlights";
 import Inspire from "@/components/home/Inspire";
 import ProductCarousel from "@/components/home/ProductCarousel";
-import Influencers from "@/components/home/Influencers";
 import SeeNewIn from "@/components/home/SeeNewIn";
 import AdSlot from "@/components/ads/AdSlot";
 import { ads } from "@/lib/ads";
@@ -65,8 +64,6 @@ export default function Home() {
       <div className="mx-auto max-w-7xl px-4 py-6">
         <AdSlot slot={ads.homeInline} />
       </div>
-
-      <Influencers />
 
       <SeeNewIn />
     </div>

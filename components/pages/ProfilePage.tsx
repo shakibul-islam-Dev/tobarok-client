@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import BackButton from "@/components/ui/BackButton";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { updateUser, useSession } from "@/lib/auth-client";
 import { hasRole, roleLabel } from "@/lib/permissions";
 
@@ -163,27 +164,43 @@ export default function ProfilePage() {
 
               <div>
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                  Profile Image URL
+                  Profile Picture
                   <span className="ml-1 font-normal normal-case text-neutral-400">
                     (optional)
                   </span>
                 </label>
-                <div className="relative">
-                  <ImageIcon
-                    size={16}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  />
-                  <input
-                    type="url"
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="relative">
+                    <ImageIcon
+                      size={16}
+                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
+                    />
+                    <input
+                      type="text"
+                      value={image}
+                      onChange={(e) => {
+                        setImage(e.target.value);
+                        setMessage(null);
+                        setError(null);
+                        setImageBroken(false);
+                      }}
+                      placeholder="https://example.com/avatar.jpg or /uploads/…"
+                      className={`${inputCls} pl-11`}
+                    />
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <ImageUploader
                     value={image}
-                    onChange={(e) => {
-                      setImage(e.target.value);
+                    onChange={(value) => {
+                      setImage(value);
                       setMessage(null);
                       setError(null);
                       setImageBroken(false);
                     }}
-                    placeholder="https://example.com/avatar.jpg"
-                    className={`${inputCls} pl-11`}
+                    label="Upload picture"
+                    hint="Choose a photo from your device"
+                    hidePreview
                   />
                 </div>
               </div>

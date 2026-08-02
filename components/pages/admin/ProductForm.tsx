@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, Loader2, X } from "lucide-react";
 import SmartImage from "@/components/ui/SmartImage";
+import ImageUploader from "@/components/ui/ImageUploader";
 import {
   createProduct,
   updateProduct,
@@ -371,12 +372,19 @@ export default function ProductForm({
           <span className={labelCls}>Main Image URL *</span>
           <input
             required
-            type="url"
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
-            placeholder="https://images.unsplash.com/…"
+            placeholder="https://images.unsplash.com/… or /uploads/…"
             className={inputCls}
           />
+          <span className="mt-3 block">
+            <ImageUploader
+              value={form.image}
+              onChange={(image) => setForm({ ...form, image })}
+              label="Upload product image"
+              hint="Choose a file from your device instead of a URL"
+            />
+          </span>
           {form.image.trim() && (
             <span className="mt-2 block">
               <SmartImage

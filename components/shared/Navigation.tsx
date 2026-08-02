@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ChevronDown,
-  Heart,
-  Menu,
-  Search,
-  ShoppingBag,
-  X,
-} from "lucide-react";
+import { ChevronDown, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -146,7 +139,10 @@ const NavigationBar = () => {
             You&apos;re in BD&apos;s Biggest Drop Shoulder Lineup.
           </p>
           <div className="hidden shrink-0 items-center gap-5 text-neutral-300 md:flex">
-            <Link href="/store-locator" className="transition-colors hover:text-white">
+            <Link
+              href="/store-locator"
+              className="transition-colors hover:text-white"
+            >
               Outlets
             </Link>
             <Link href="/track" className="transition-colors hover:text-white">
@@ -174,7 +170,7 @@ const NavigationBar = () => {
               <ShoppingBag size={28} className="text-neutral-900" />
               <div>
                 <h1 className="text-2xl font-extrabold leading-none tracking-tight">
-                  tobarok
+                  Tabarok
                 </h1>
                 <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
                   Shopping &amp; Earn

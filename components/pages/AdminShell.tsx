@@ -16,6 +16,7 @@ import {
   UserCog,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import DashboardSidebar from "@/components/shared/DashboardSidebar";
 import { signOut, useSession } from "@/lib/auth-client";
 import { hasRole, roleLabel } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -59,33 +60,31 @@ export default function AdminShell({ crumbLabel, children }: AdminShellProps) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
-      <Breadcrumb
-        items={[
-          { label: "Dashboard", href: "/admin" },
-          { label: crumbLabel },
-        ]}
-      />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        <aside className="h-fit overflow-hidden rounded-xl border border-neutral-200/80 bg-white shadow-sm">
-          <div className="border-b border-neutral-100 p-5">
-            <div className="flex items-center gap-2">
-              <Shield size={16} className="text-neutral-400" />
-              <h2 className="text-lg font-bold text-neutral-800">Admin</h2>
-            </div>
-            <span
+    <>
+      <DashboardSidebar
+        topBarContent={
+          <div className="flex items-center gap-3">
+            <div
               className={cn(
-                "mt-2 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
-                isSuper
-                  ? "bg-purple-100 text-purple-700"
-                  : "bg-emerald-100 text-emerald-700"
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white",
+                isSuper ? "bg-purple-600" : "bg-emerald-600"
               )}
             >
-              {roleLabel(role)}
-            </span>
+              <Shield size={16} />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-neutral-900">
+                Admin
+              </p>
+              <p className="truncate text-xs text-neutral-400">
+                {roleLabel(role)}
+              </p>
+            </div>
           </div>
-          <nav className="py-2">
+        }
+      >
+        <div className="flex h-full flex-col overflow-hidden">
+          <nav className="min-h-0 flex-1 overflow-y-auto py-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href;
@@ -129,6 +128,7 @@ export default function AdminShell({ crumbLabel, children }: AdminShellProps) {
                 Users
               </Link>
             )}
+            <div className="mx-5 my-2 border-t border-neutral-100" />
             <button
               type="button"
               onClick={handleSignOut}
@@ -138,10 +138,22 @@ export default function AdminShell({ crumbLabel, children }: AdminShellProps) {
               Log-out
             </button>
           </nav>
-        </aside>
+        </div>
+      </DashboardSidebar>
 
-        <div className="lg:col-span-3">{children}</div>
+      {/* ---- Main content ---- */}
+      <div className="lg:pl-72">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+          <Breadcrumb
+            items={[
+              { label: "Dashboard", href: "/admin" },
+              { label: crumbLabel },
+            ]}
+          />
+
+          <div className="space-y-6">{children}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
