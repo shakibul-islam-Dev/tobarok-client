@@ -54,11 +54,32 @@ let loaded = false;
 const cartListeners = new Set<Listener>();
 const wishlistListeners = new Set<Listener>();
 
+const productPrice = new Map(
+  allProducts.map((p) => [p.id, p.price] as const)
+);
+
+function sanitizeCart(items: CartItem[]): CartItem[] {
+  return items.filter(
+    (i) =>
+      typeof i.id === "number" &&
+      Number.isInteger(i.id) &&
+      productPrice.has(i.id)
+  );
+}
+
+function sanitizeWishlist(ids: number[]): number[] {
+  return ids.filter(
+    (id) => typeof id === "number" && Number.isInteger(id) && productPrice.has(id)
+  );
+}
+
 function ensureLoaded() {
   if (loaded) return;
   loaded = true;
-  cartState = load(CART_KEY, EMPTY_CART);
-  wishlistState = load(WISHLIST_KEY, EMPTY_WISHLIST);
+  cartState = sanitizeCart(load(CART_KEY, EMPTY_CART));
+  wishlistState = sanitizeWishlist(load(WISHLIST_KEY, EMPTY_WISHLIST));
+  window.localStorage.setItem(CART_KEY, JSON.stringify(cartState));
+  window.localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistState));
 }
 
 function subscribeCart(listener: Listener) {
@@ -94,10 +115,6 @@ function updateWishlist(updater: (prev: number[]) => number[]) {
   window.localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistState));
   wishlistListeners.forEach((l) => l());
 }
-
-const productPrice = new Map(
-  allProducts.map((p) => [p.id, p.price] as const)
-);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const cart = useSyncExternalStore(

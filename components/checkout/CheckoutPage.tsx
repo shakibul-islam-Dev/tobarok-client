@@ -90,7 +90,7 @@ export default function CheckoutPage() {
             Thanks for shopping with tobarok.{" "}
             {payment === "wallet"
               ? `${formatMoney(total)} was charged to your wallet.`
-              : "This is a demo checkout — connect your payment gateway to accept real orders."}{" "}
+              : "We'll confirm your order shortly."}{" "}
             Track your order from the Track Order page.
           </p>
           <div className="mt-8 flex justify-center gap-3">
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
           </dl>
           <p className="mt-4 flex items-start gap-2 text-xs text-neutral-500">
             <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-            {cartCount} {cartCount === 1 ? "item" : "items"} • secure demo
+            {cartCount} {cartCount === 1 ? "item" : "items"} • secure
             checkout
           </p>
           <button

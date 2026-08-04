@@ -37,7 +37,8 @@ export type TransactionSource =
   | "order_payment"
   | "cashback"
   | "refund"
-  | "adjustment";
+  | "adjustment"
+  | "ad_reward";
 
 export const TRANSACTION_SOURCES: readonly TransactionSource[] = [
   "topup",
@@ -45,6 +46,7 @@ export const TRANSACTION_SOURCES: readonly TransactionSource[] = [
   "cashback",
   "refund",
   "adjustment",
+  "ad_reward",
 ];
 
 export const SOURCE_LABEL: Record<TransactionSource, string> = {
@@ -53,6 +55,7 @@ export const SOURCE_LABEL: Record<TransactionSource, string> = {
   cashback: "Cashback",
   refund: "Refund",
   adjustment: "Adjustment",
+  ad_reward: "Ad Reward",
 };
 
 /** A single ledger entry. Immutable after creation. */

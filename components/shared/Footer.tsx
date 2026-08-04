@@ -33,8 +33,6 @@ const helpLinks = [
 
 const companyLinks = [
   { title: "About Us", link: "/about" },
-  { title: "Signature Series", link: "/signature-series" },
-  { title: "Lifestyle Series", link: "/collections/lifestyle" },
   { title: "Terms & Conditions", link: "/terms" },
   { title: "Privacy Policy", link: "/privacy" },
   { title: "Return Policy", link: "/returns" },

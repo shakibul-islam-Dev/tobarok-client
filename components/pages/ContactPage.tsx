@@ -51,8 +51,7 @@ export default function ContactPage() {
                 Message sent!
               </h2>
               <p className="mt-2 text-sm text-neutral-500">
-                Thanks for reaching out — we&apos;ll reply soon. This is a demo
-                form; wire it to your backend to receive real messages.
+                Thanks for reaching out — we&apos;ll reply soon.
               </p>
             </div>
           ) : (

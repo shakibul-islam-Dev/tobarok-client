@@ -3,25 +3,53 @@
 import { useState } from "react";
 import { Check, Package, Search, Truck } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { CURRENCY } from "@/lib/data";
+import {
+  getOrderById,
+  orderItemCount,
+  orderStatusStyles,
+  orderSubtotal,
+  type UserOrder,
+  type UserOrderStatus,
+} from "@/lib/order-data";
 
 const inputCls =
   "w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900";
 
+const formatPrice = (n: number) => `${CURRENCY}${n.toLocaleString("en-BD")}`;
+
+const steps = [
+  { label: "Order Confirmed" },
+  { label: "Processing" },
+  { label: "Out for Delivery" },
+  { label: "Delivered" },
+];
+
+function doneIndex(status: UserOrderStatus): number {
+  switch (status) {
+    case "On the way":
+      return 2;
+    case "Completed":
+    case "Cancelled":
+      return 3;
+    default:
+      return 0;
+  }
+}
+
 export default function TrackOrderPage() {
   const [orderId, setOrderId] = useState("");
   const [tracking, setTracking] = useState(false);
+  const [order, setOrder] = useState<UserOrder | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const id = orderId.replace(/^#/, "").trim().toLowerCase();
     setTracking(true);
+    setOrder(getOrderById(id) ?? null);
   };
 
-  const steps = [
-    { label: "Order Confirmed", done: true },
-    { label: "Processing", done: true },
-    { label: "Out for Delivery", done: true },
-    { label: "Delivered", done: false },
-  ];
+  const done = order ? doneIndex(order.status) : 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
@@ -31,7 +59,7 @@ export default function TrackOrderPage() {
           Track Your Order
         </h1>
         <p className="mt-3 text-center text-sm text-neutral-500">
-          Enter your order ID and the phone number you used while ordering.
+          Enter your order ID to see the latest status.
         </p>
 
         <form
@@ -50,16 +78,10 @@ export default function TrackOrderPage() {
                 setOrderId(e.target.value);
                 setTracking(false);
               }}
-              placeholder="Order ID (e.g. TB-1024)"
+              placeholder="Order ID"
               className={`${inputCls} pl-11`}
             />
           </div>
-          <input
-            type="tel"
-            required
-            placeholder="Phone number"
-            className={inputCls}
-          />
           <button
             type="submit"
             className="flex w-full items-center justify-center gap-2 rounded-full bg-neutral-900 py-3.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-neutral-700"
@@ -69,60 +91,61 @@ export default function TrackOrderPage() {
           </button>
         </form>
 
-        {tracking && (
+        {tracking && !order && (
+          <div className="mt-8 rounded-2xl border border-neutral-200 p-6 text-center">
+            <p className="text-sm font-bold text-neutral-900">
+              No order found
+            </p>
+            <p className="mt-2 text-sm text-neutral-500">
+              Double-check the order ID and try again.
+            </p>
+          </div>
+        )}
+
+        {tracking && order && (
           <div className="mt-8 rounded-2xl border border-neutral-200 p-6">
             <div className="flex items-center justify-between">
               <p className="text-sm font-bold text-neutral-900">
-                Order{" "}
-                <span className="text-neutral-500">
-                  {orderId || "TB-1024"}
-                </span>
+                Order <span className="text-neutral-500">#{order.id}</span>
               </p>
-              <span className="rounded-full bg-green-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-green-700">
-                On the way
+              <span
+                className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${orderStatusStyles[order.status]}`}
+              >
+                {order.status}
               </span>
             </div>
+            <p className="mt-3 text-xs text-neutral-500">
+              Placed on {order.date} • {orderItemCount(order)}{" "}
+              {orderItemCount(order) === 1 ? "item" : "items"} •{" "}
+              {formatPrice(orderSubtotal(order))}
+            </p>
             <ol className="mt-6 space-y-5">
-              {steps.map((step, i) => (
-                <li key={step.label} className="flex items-start gap-3">
-                  <span
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
-                      step.done
-                        ? "bg-neutral-900 text-white"
-                        : "border border-neutral-300 text-neutral-400"
-                    }`}
-                  >
-                    {step.done ? (
-                      <Check size={14} />
-                    ) : (
-                      <Truck size={14} />
-                    )}
-                  </span>
-                  <div>
-                    <p
-                      className={`text-sm font-semibold ${
-                        step.done ? "text-neutral-900" : "text-neutral-400"
+              {steps.map((step, i) => {
+                const isDone = i <= done;
+                return (
+                  <li key={step.label} className="flex items-start gap-3">
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                        isDone
+                          ? "bg-neutral-900 text-white"
+                          : "border border-neutral-300 text-neutral-400"
                       }`}
                     >
-                      {step.label}
-                    </p>
-                    <p className="text-xs text-neutral-400">
-                      {step.done
-                        ? i === 0
-                          ? "Jul 28, 2026 - 10:12 AM"
-                          : i === 1
-                            ? "Jul 29, 2026 - 02:40 PM"
-                            : "Jul 31, 2026 - 09:05 AM"
-                        : "Expected today by 8:00 PM"}
-                    </p>
-                  </div>
-                </li>
-              ))}
+                      {isDone ? <Check size={14} /> : <Truck size={14} />}
+                    </span>
+                    <div>
+                      <p
+                        className={`text-sm font-semibold ${
+                          isDone ? "text-neutral-900" : "text-neutral-400"
+                        }`}
+                      >
+                        {step.label}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
             </ol>
-            <p className="mt-6 rounded-lg bg-neutral-100 p-3 text-xs text-neutral-500">
-              This is a demo tracker. Connect it to your order API to show
-              real-time updates.
-            </p>
           </div>
         )}
       </div>

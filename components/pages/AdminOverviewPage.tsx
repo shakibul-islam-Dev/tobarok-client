@@ -22,6 +22,11 @@ import SmartImage from "@/components/ui/SmartImage";
 import { admin, useSession } from "@/lib/auth-client";
 import { roleLabel } from "@/lib/permissions";
 import {
+  demoCategories,
+  demoProducts,
+  demoStats,
+} from "@/lib/client-demo";
+import {
   fetchAdminOrders,
   fetchCategories,
   fetchHeroSlides,
@@ -45,10 +50,10 @@ interface Stats {
 
 export default function AdminOverviewPage() {
   const { data: session } = useSession();
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [products, setProducts] = useState<ApiProduct[]>([]);
-  const [categories, setCategories] = useState<ApiCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<Stats | null>(demoStats);
+  const [products, setProducts] = useState<ApiProduct[]>(demoProducts);
+  const [categories, setCategories] = useState<ApiCategory[]>(demoCategories);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState<string | null>(null);

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AdminShell from "./AdminShell";
 import SmartImage from "@/components/ui/SmartImage";
+import { demoSlides } from "@/lib/client-demo";
 import {
   createHeroSlide,
   deleteHeroSlide,
@@ -72,8 +73,8 @@ const inputCls =
 const labelCls = "text-xs font-semibold uppercase tracking-wider text-neutral-500";
 
 export default function AdminHeroSlidesPage() {
-  const [slides, setSlides] = useState<ApiHeroSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [slides, setSlides] = useState<ApiHeroSlide[]>(demoSlides);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<ApiHeroSlide | null>(null);

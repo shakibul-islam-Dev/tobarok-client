@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AdminShell from "./AdminShell";
 import SmartImage from "@/components/ui/SmartImage";
+import { demoCategories } from "@/lib/client-demo";
 import {
   createCategory,
   deleteCategory,
@@ -82,8 +83,8 @@ function slugify(title: string): string {
 }
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<ApiCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<ApiCategory[]>(demoCategories);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<ApiCategory | null>(null);

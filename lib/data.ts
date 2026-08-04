@@ -3,8 +3,6 @@ export const CURRENCY = "৳";
 const img = (id: string, w = 800, h = 800) =>
   `https://images.unsplash.com/${id}?w=${w}&h=${h}&q=75&auto=format&fit=crop`;
 
-export const FALLBACK_IMAGE = img("photo-1521572163474-6864f9cf17ab");
-
 export const images = {
   tees: img("photo-1521572163474-6864f9cf17ab"),
   manGrey: img("photo-1503341504253-dff4815485f1"),
@@ -285,64 +283,6 @@ export const navigationLinks: NavLink[] = [
       { title: "Summer Pack", link: "/budget/summer-pack" },
     ],
   },
-  {
-    title: "Collections",
-    columns: [
-      {
-        title: "T-Shirts",
-        items: [
-          { title: "Drop Shoulder", link: "/collections/drop-shoulder" },
-          { title: "Half Sleeves", link: "/collections/half-sleeves" },
-          { title: "Full Sleeves", link: "/collections/full-sleeves" },
-          { title: "Polo Perfection", link: "/collections/polo" },
-        ],
-      },
-      {
-        title: "Bottoms & Winter",
-        items: [
-          { title: "Solid SweatPant", link: "/collections/solid-sweatpant" },
-          { title: "SweatPant", link: "/collections/sweatpant" },
-          { title: "Hoodie", link: "/collections/hoodie" },
-          { title: "Sweatshirt", link: "/collections/sweatshirt" },
-          { title: "Turtle Neck", link: "/collections/turtle-neck" },
-        ],
-      },
-      {
-        title: "Kids & Basics",
-        items: [
-          { title: "Kiddo T-Shirt", link: "/collections/kiddo" },
-          { title: "Kiddo Solid", link: "/collections/kiddo-solid" },
-          { title: "Solid Drop Shoulder", link: "/collections/solid" },
-          { title: "Solid Half Sleeves", link: "/collections/solid-half" },
-          { title: "Solid Hoodie", link: "/collections/solid-hoodie" },
-        ],
-      },
-      {
-        title: "More",
-        items: [
-          { title: "Cap", link: "/accessories/cap" },
-          { title: "Socks", link: "/accessories/socks" },
-          { title: "Bandana Scarf", link: "/accessories/bandana" },
-          { title: "Bag", link: "/accessories/bag" },
-          { title: "Sunglasses", link: "/accessories/sunglasses" },
-          { title: "Gift Vouchers", link: "/gift-voucher" },
-          { title: "Lifestyle Series", link: "/collections/lifestyle" },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Signature Series",
-    submenu: [
-      { title: "Wear Bangladesh", link: "/signature-series" },
-      { title: "Iconic tobarok Squad", link: "/signature/tobarok-squad" },
-      { title: "Bangla Verse", link: "/signature/bangla-verse" },
-      { title: "Deshi Talk", link: "/signature/deshi-talk" },
-      { title: "Banglar Khadok", link: "/signature/banglar-khadok" },
-      { title: "Premium Items", link: "/signature/premium" },
-    ],
-  },
-  { title: "Socks", link: "/accessories/socks" },
 ];
 
 const rawProducts = [

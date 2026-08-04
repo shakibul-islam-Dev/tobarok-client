@@ -61,8 +61,7 @@ export default function CustomPage() {
               Request received!
             </h2>
             <p className="mt-2 text-sm text-neutral-500">
-              Our team will contact you within 24 hours with a quote. This is a
-              demo — connect it to your backend to receive real submissions.
+              Our team will contact you within 24 hours with a quote.
             </p>
           </div>
         ) : (

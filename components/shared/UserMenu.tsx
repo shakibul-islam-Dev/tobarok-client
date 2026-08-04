@@ -6,6 +6,7 @@ import {
   LogOut,
   MapPin,
   Shield,
+  Tv,
   User,
   UserRound,
   Wallet,
@@ -21,6 +22,7 @@ const signedInItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
   { label: "Billing Address", href: "/billing-address", icon: MapPin },
   { label: "Wallet", href: "/wallet", icon: Wallet },
+  { label: "Watch Ads & Earn", href: "/earn", icon: Tv },
   { label: "Profile Update", href: "/profile", icon: UserRound },
 ];
 

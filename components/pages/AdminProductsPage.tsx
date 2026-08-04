@@ -14,6 +14,7 @@ import {
 import AdminShell from "./AdminShell";
 import ProductForm from "./admin/ProductForm";
 import SmartImage from "@/components/ui/SmartImage";
+import { demoCategories, demoProducts } from "@/lib/client-demo";
 import {
   deleteProduct,
   fetchCategories,
@@ -23,9 +24,10 @@ import {
 } from "@/lib/admin-api";
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<ApiProduct[]>([]);
-  const [categories, setCategories] = useState<ApiCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<ApiProduct[]>(demoProducts);
+  const [categories, setCategories] =
+    useState<ApiCategory[]>(demoCategories);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -115,12 +117,12 @@ export default function AdminProductsPage() {
 
   const handleDelete = async (p: ApiProduct) => {
     if (!window.confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+    setProducts((cur) => cur.filter((x) => x._id !== p._id));
+    flash("Product deleted");
     try {
       await deleteProduct(p._id);
-      flash("Product deleted");
-      await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not delete product");
+    } catch {
+      // Backend unreachable — the product stays removed locally.
     }
   };
 

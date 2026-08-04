@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import AdminShell from "./AdminShell";
+import { demoOutlets } from "@/lib/client-demo";
 import {
   createOutlet,
   deleteOutlet,
@@ -78,8 +79,8 @@ const inputCls =
 const labelCls = "text-xs font-semibold uppercase tracking-wider text-neutral-500";
 
 export default function AdminOutletsPage() {
-  const [outlets, setOutlets] = useState<ApiOutlet[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [outlets, setOutlets] = useState<ApiOutlet[]>(demoOutlets);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<ApiOutlet | null>(null);
