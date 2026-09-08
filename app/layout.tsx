@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white">
         <main className="w-full flex-1">{children}</main>
-
+        <h1>Hwellow</h1>
         <HistoryNav />
       </body>
     </html>
